@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+    <title>smcNight — интернет-канал</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #f5f8fc;
+            color: #1a2a3e;
+            padding: 20px;
+            line-height: 1.6;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        /* Тёмная тема */
+        body.dark {
+            background: #0d1a2b;
+            color: #e8f0f8;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Шапка */
+        .header {
+            background: #fff;
+            padding: 16px 24px;
+            border-radius: 16px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+            border: 1px solid #d0ddee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 24px;
+            transition: background 0.3s, border-color 0.3s;
+        }
+
+        body.dark .header {
+            background: #0f1f32;
+            border-color: #2a4a6a;
+        }
+
+        .header__logo {
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        .header__logo span {
+            color: #2b7be4;
+        }
+
+        body.dark .header__logo span {
+            color: #4a9eff;
+        }
+
+        .header__tagline {
+            font-size: 13px;
+            color: #5a7a9a;
+            background: #dce8f8;
+            padding: 2px 12px;
+            border-radius: 20px;
+        }
+
+        body.dark .header__tagline {
+            background: #1a3a5c;
+            color: #90b0d0;
+        }
+
+        .header__actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-theme {
+            background: #e9eff6;
+            border: 1px solid #d0ddee;
+            padding: 8px 18px;
+            border-radius: 40px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+        body.dark .btn-theme {
+            background: #1a2f45;
+            border-color: #2a4a6a;
+            color: #e8f0f8;
+        }
+
+        .btn-theme:hover {
+            background: #dce8f8;
+            border-color: #2b7be4;
+        }
+
+        /* Навигация */
+        .nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            background: #e9eff6;
+            padding: 6px;
+            border-radius: 16px;
+            border: 1px solid #d0ddee;
+            margin-bottom: 24px;
+            transition: background 0.3s, border-color 0.3s;
+        }
+
+        body.dark .nav {
+            background: #1a2f45;
+            border-color: #2a4a6a;
+        }
+
+        .nav__btn {
+            background: transparent;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 500;
+            color: #5a7a9a;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        body.dark .nav__btn {
+            color: #90b0d0;
+        }
+
+        .nav__btn:hover {
+            background: #fff;
+            color: #1a2a3e;
+        }
+
+        body.dark .nav__btn:hover {
+            background: #152a40;
+            color: #e8f0f8;
+        }
+
+        .nav__btn.active {
+            background: #2b7be4;
+            color: #fff;
+        }
+
+        body.dark .nav__btn.active {
+            background: #4a9eff;
+            color: #fff;
+        }
+
+        /* Карточки */
+        .card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 24px 28px;
+            border: 1px solid #d0ddee;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+            margin-bottom: 20px;
+            transition: background 0.3s, border-color 0.3s;
+        }
+
+        body.dark .card {
+            background: #152a40;
+            border-color: #2a4a6a;
+        }
+
+        .card__title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Плеер */
+        .live-layout {
+            display: grid;
+            grid-template-columns: 1fr 260px;
+            gap: 20px;
+        }
+
+        .player-wrapper {
+            background: #0a0a0a;
+            border-radius: 12px;
+            overflow: hidden;
+            aspect-ratio: 16/9;
+            border: 1px solid #d0ddee;
+            position: relative;
+        }
+
+        .player-wrapper iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* Программа передач */
+        .schedule {
+            background: #e9eff6;
+            border-radius: 12px;
+            padding: 14px 16px;
+            border: 1px solid #d0ddee;
+            max-height: 400px;
+            overflow-y: auto;
+            transition: background 0.3s, border-color 0.3s;
+        }
+
+        body.dark .schedule {
+            background: #1a2f45;
+            border-color: #2a4a6a;
+        }
+
+        .schedule::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .schedule::-webkit-scrollbar-thumb {
+            background: #2b7be4;
+            border-radius: 10px;
+        }
+
+        .schedule__header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            font-weight: 600;
+            color: #2b7be4;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #d0ddee;
+            margin-bottom: 8px;
+        }
+
+        body.dark .schedule__header {
+            color: #4a9eff;
+            border-color: #2a4a6a;
+        }
+
+        .schedule__item {
+            display: grid;
+            grid-template-columns: 50px 1fr;
+            gap: 10px;
+            padding: 5px 0;
+            border-bottom: 1px solid #d0ddee;
+            font-size: 13px;
+            transition: all 0.2s;
+        }
+
+        body.dark .schedule__item {
+            border-color: #2a4a6a;
+        }
+
+        .schedule__item:last-child {
+            border-bottom: none;
+        }
+
+        .schedule__item.current {
+            background: #2b7be4;
+            border-radius: 8px;
+            padding: 5px 8px;
+            margin: 0 -8px;
+            color: #fff;
+        }
+
+        body.dark .schedule__item.current {
+            background: #4a9eff;
+        }
+
+        .schedule__item.current .schedule__time {
+            color: #fff;
+        }
+
+        .schedule__item.current .schedule__program {
+            color: #fff;
+        }
+
+        .schedule__time {
+            color: #2b7be4;
+            font-weight: 600;
+        }
+
+        body.dark .schedule__time {
+            color: #4a9eff;
+        }
+
+        /* Новости */
+        .news-item {
+            padding: 12px 16px;
+            border-left: 3px solid #2b7be4;
+            background: #e9eff6;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px 16px;
+            transition: background 0.3s;
+        }
+
+        body.dark .news-item {
+            background: #1a2f45;
+        }
+
+        .news-item__date {
+            color: #2b7be4;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .news-item__badge {
+            background: #2b7be4;
+            color: #fff;
+            font-size: 11px;
+            padding: 1px 12px;
+            border-radius: 20px;
+            text-transform: uppercase;
+        }
+
+        /* Сетка видео */
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 16px;
+        }
+
+        .video-card {
+            background: #e9eff6;
+            border: 1px solid #d0ddee;
+            border-radius: 12px;
+            padding: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: left;
+            font-family: inherit;
+        }
+
+        body.dark .video-card {
+            background: #1a2f45;
+            border-color: #2a4a6a;
+            color: #e8f0f8;
+        }
+
+        .video-card:hover {
+            transform: translateY(-3px);
+            border-color: #2b7be4;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+        }
+
+        .video-card__title {
+            font-weight: 600;
+            font-size: 15px;
+        }
+
+        .video-card__date {
+            font-size: 13px;
+            color: #5a7a9a;
+        }
+
+        body.dark .video-card__date {
+            color: #90b0d0;
+        }
+
+        .video-card__play {
+            color: #2b7be4;
+            font-weight: 500;
+            font-size: 13px;
+            margin-top: 6px;
+            display: block;
+        }
+
+        /* Админ-кнопка */
+        .admin-entry {
+            display: none;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .admin-entry.show {
+            display: block;
+        }
+
+        .admin-entry__link {
+            display: inline-block;
+            padding: 8px 24px;
+            background: #2b7be4;
+            color: #fff;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+
+        .admin-entry__link:hover {
+            background: #1a5fb0;
+        }
+
+        /* Модалка */
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal.open {
+            display: flex;
+        }
+
+        .modal__content {
+            background: #fff;
+            border-radius: 16px;
+            max-width: 880px;
+            width: 100%;
+            padding: 24px;
+            position: relative;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        body.dark .modal__content {
+            background: #152a40;
+        }
+
+        .modal__close {
+            position: absolute;
+            top: 12px;
+            right: 16px;
+            font-size: 28px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #5a7a9a;
+        }
+
+        body.dark .modal__close {
+            color: #90b0d0;
+        }
+
+        .modal__player {
+            aspect-ratio: 16/9;
+            width: 100%;
+            background: #000;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .modal__player video {
+            width: 100%;
+            height: 100%;
+        }
+
+        .modal__title {
+            margin: 16px 0 4px;
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .modal__date {
+            color: #5a7a9a;
+            font-size: 14px;
+        }
+
+        body.dark .modal__date {
+            color: #90b0d0;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #8aaac0;
+            font-size: 14px;
+            border-top: 1px solid #d0ddee;
+            margin-top: 30px;
+        }
+
+        body.dark .footer {
+            border-color: #2a4a6a;
+            color: #6080a0;
+        }
+
+        /* Адаптив */
+        @media (max-width: 820px) {
+            .live-layout {
+                grid-template-columns: 1fr;
+            }
+            .header {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+            .nav__btn {
+                padding: 8px 14px;
+                font-size: 13px;
+                flex: 1;
+                justify-content: center;
+            }
+            .schedule {
+                max-height: 200px;
+            }
+            .video-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .video-grid {
+                grid-template-columns: 1fr;
+            }
+            .nav__btn .nav-text {
+                display: none;
+            }
+            .card {
+                padding: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- Шапка -->
+    <header class="header">
+        <div>
+            <span class="header__logo">smc<span>Night</span></span>
+            <span class="header__tagline">beta</span>
+        </div>
+        <div class="header__actions">
+            <button class="btn-theme" id="themeToggle">☀️ Светлая</button>
+        </div>
+    </header>
+
+    <!-- Навигация -->
+    <nav class="nav" id="tabNav">
+        <button class="nav__btn active" data-tab="home"><span>⌂</span> <span class="nav-text">Главная</span></button>
+        <button class="nav__btn" data-tab="content"><span>▸</span> <span class="nav-text">Контент</span></button>
+        <button class="nav__btn" data-tab="info"><span>ⓘ</span> <span class="nav-text">Информация</span></button>
+        <button class="nav__btn" data-tab="ads"><span>◈</span> <span class="nav-text">Реклама</span></button>
+    </nav>
+
+    <!-- Админ-вход -->
+    <div class="admin-entry" id="adminEntry">
+        <a href="admin.html" class="admin-entry__link">🔧 Управление сайтом</a>
+    </div>
+
+    <!-- Контент -->
+    <main>
+
+        <!-- ГЛАВНАЯ -->
+        <section id="home" class="pane">
+            <div class="card">
+                <h2 class="card__title"><span>▶</span> Прямой эфир</h2>
+                <div class="live-layout">
+                    <div class="player-wrapper">
+                        <iframe id="catcastIframe" src="https://catcast.tv/player/51102" allowfullscreen></iframe>
+                    </div>
+                    <div class="schedule" id="scheduleDisplay">
+                        <div class="schedule__header">
+                            <span>📅 Загрузка...</span>
+                            <span>🕐 --:--</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 class="card__title"><span>📰</span> Последние новости</h2>
+                <div id="newsDisplay"></div>
+            </div>
+        </section>
+
+        <!-- КОНТЕНТ -->
+        <section id="content" class="pane" style="display:none;">
+            <div class="card">
+                <h2 class="card__title"><span>🎬</span> Архив программ</h2>
+                <p style="color:#5a7a9a; margin-bottom:16px;">Нажмите на программу, чтобы открыть плеер.</p>
+                <div class="video-grid" id="videoGrid"></div>
+            </div>
+        </section>
+
+        <!-- ИНФОРМАЦИЯ -->
+        <section id="info" class="pane" style="display:none;">
+            <div class="card">
+                <h2 class="card__title"><span>ⓘ</span> О канале smcNight</h2>
+                <p><strong>Дата создания:</strong> 16 апреля 2025 года</p>
+                <p><strong>Владелец:</strong> Медиахолдинг "smcMedia" и ОК "smcRYTP"</p>
+                <p><strong>Жанр:</strong> Информационно-развлекательный</p>
+                <p><strong>Платформа:</strong> CatCast</p>
+                <p><strong>Аудитория:</strong> 50+ зрителей</p>
+                <p><strong>Язык:</strong> Русский</p>
+                <p><strong>Telegram:</strong> <a href="https://t.me/smcNightik" target="_blank">smcNight (@smcNightik)</a></p>
+                <div style="margin-top:16px; padding:16px 20px; background:#e9eff6; border-radius:12px; border-left:4px solid #2b7be4;">
+                    <p><strong>smcNight</strong> — любительский интернет-канал из Арсеньева. На канале транслируются старые программы телекомпании ВИD, разный контент от smcMedia, а также мультфильмы.</p>
+                    <p style="margin-top:8px;">Вещание: с 11:00 или с 13:00 до 19:00 или до 20:30.</p>
+                    <p style="margin-top:8px;">Канал зарегистрирован на CatCast.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- РЕКЛАМА -->
+        <section id="ads" class="pane" style="display:none;">
+            <div class="card">
+                <h2 class="card__title"><span>◈</span> Реклама на smcNight</h2>
+                <p style="color:#5a7a9a;">Размещение рекламы на канале — абсолютно бесплатно.</p>
+                <div style="background:#e9eff6; border-radius:12px; padding:20px 24px; margin-top:16px; border:1px solid #d0ddee;">
+                    <span style="background:#2d9b5e; color:#fff; padding:2px 16px; border-radius:20px; font-size:13px; font-weight:600;">Бесплатно</span>
+                    <h3 style="margin:12px 0 4px;">Контакты для связи</h3>
+                    <p style="color:#5a7a9a;">По всем вопросам рекламы обращайтесь:</p>
+                    <ul style="list-style:none; margin-top:12px;">
+                        <li style="padding:8px 12px; background:#fff; border-radius:8px; border:1px solid #d0ddee;"><strong>Telegram:</strong> <a href="https://t.me/not_tails" target="_blank">@not_tails</a></li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="footer">
+        <p>© 2025–2026 <strong>smcNight</strong> — интернет-канал. Сделано с любовью для ночных зрителей.</p>
+    </footer>
+
+</div>
+
+<!-- Модалка -->
+<div class="modal" id="modalPlayer">
+    <div class="modal__content">
+        <button class="modal__close" id="closeModalBtn">✕</button>
+        <div class="modal__player">
+            <video id="modalVideo" controls autoplay></video>
+        </div>
+        <h3 class="modal__title" id="modalTitle">Название программы</h3>
+        <p class="modal__date" id="modalDate">Дата выхода</p>
+    </div>
+</div>
+
+<!-- ====== JAVASCRIPT ====== -->
+<script>
+    (function() {
+        'use strict';
+
+        // ============================================================
+        // ДАННЫЕ
+        // ============================================================
+        const ADMIN_IP = '185.109.20.46';
+
+        const DEFAULT_NEWS = [
+            { id: 1, date: '24.08.2026', text: 'Запускаем новый формат — «Ночной джаз» по пятницам!', badge: 'новое' },
+            { id: 2, date: '23.08.2026', text: 'Техническое обновление: улучшено качество трансляции.', badge: '' },
+            { id: 3, date: '22.08.2026', text: 'smcNight теперь в Telegram-канале.', badge: 'важно' },
+            { id: 4, date: '20.08.2026', text: 'Конкурс: присылайте свои клипы для эфира.', badge: '' },
+            { id: 5, date: '18.08.2026', text: 'Новый ведущий в вечернем стриме — Андрей Н.', badge: '' },
+        ];
+
+        const DEFAULT_SCHEDULE = [
+            { id: 1, time: '00:00', program: 'Ночной джаз' },
+            { id: 2, time: '02:00', program: 'Киноклуб: триллер' },
+            { id: 3, time: '04:30', program: 'Акустика' },
+            { id: 4, time: '07:00', program: 'Утреннее шоу' },
+            { id: 5, time: '10:00', program: 'Новости smc' },
+            { id: 6, time: '12:00', program: 'Обеденный перерыв' },
+            { id: 7, time: '14:00', program: 'Техно-микс' },
+            { id: 8, time: '17:00', program: 'Вечерний стрим' },
+            { id: 9, time: '20:00', program: 'Премьера' },
+            { id: 10, time: '22:00', program: 'Ночной эфир' },
+        ];
+
+        const DEFAULT_VIDEOS = [
+            { id: 1, title: 'Ночной джаз', date: '24.08.2026', url: 'https://www.youtube.com/embed/dQw4w9WgXcQ' },
+            { id: 2, title: 'Киноклуб: триллер', date: '23.08.2026', url: 'https://www.youtube.com/embed/dQw4w9WgXcQ' },
+            { id: 3, title: 'Акустика', date: '22.08.2026', url: 'https://www.youtube.com/embed/dQw4w9WgXcQ' },
+            { id: 4, title: 'Утреннее шоу', date: '21.08.2026', url: 'https://www.youtube.com/embed/dQw4w9WgXcQ' },
+            { id: 5, title: 'Техно-микс', date: '20.08.2026', url: 'https://www.youtube.com/embed/dQw4w9WgXcQ' },
+            { id: 6, title: 'Вечерний стрим', date: '19.08.2026', url: 'https://www.youtube.com/embed/dQw4w9WgXcQ' },
+            { id: 7, title: 'Премьера', date: '18.08.2026', url: 'https://www.youtube.com/embed/dQw4w9WgXcQ' },
+            { id: 8, title: 'Ночной эфир', date: '17.08.2026', url: 'https://www.youtube.com/embed/dQw4w9WgXcQ' },
+        ];
+
+        // ============================================================
+        // LOCALSTORAGE
+        // ============================================================
+        function getData(key, defaultData) {
+            try {
+                const stored = localStorage.getItem('smcNight_' + key);
+                if (stored) {
+                    const parsed = JSON.parse(stored);
+                    if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+                }
+            } catch (e) {}
+            saveData(key, defaultData);
+            return defaultData;
+        }
+
+        function saveData(key, data) {
+            try {
+                localStorage.setItem('smcNight_' + key, JSON.stringify(data));
+            } catch (e) {}
+        }
+
+        let newsData = getData('news', DEFAULT_NEWS);
+        let scheduleData = getData('schedule', DEFAULT_SCHEDULE);
+        let videoData = getData('videos', DEFAULT_VIDEOS);
+
+        // ============================================================
+        // DOM
+        // ============================================================
+        const $ = (s) => document.querySelector(s);
+        const $$ = (s) => document.querySelectorAll(s);
+
+        const dom = {
+            navBtns: $$('.nav__btn'),
+            panes: {
+                home: $('#home'),
+                content: $('#content'),
+                info: $('#info'),
+                ads: $('#ads'),
+            },
+            newsDisplay: $('#newsDisplay'),
+            scheduleDisplay: $('#scheduleDisplay'),
+            videoGrid: $('#videoGrid'),
+            modal: $('#modalPlayer'),
+            modalVideo: $('#modalVideo'),
+            modalTitle: $('#modalTitle'),
+            modalDate: $('#modalDate'),
+            closeModalBtn: $('#closeModalBtn'),
+            themeToggle: $('#themeToggle'),
+            adminEntry: $('#adminEntry'),
+            catcastIframe: $('#catcastIframe'),
+        };
+
+        // ============================================================
+        // АДМИН-ПРОВЕРКА
+        // ============================================================
+        function checkAdmin() {
+            try {
+                if (localStorage.getItem('smcNight_admin_ip') === ADMIN_IP) {
+                    dom.adminEntry.classList.add('show');
+                    return;
+                }
+            } catch (e) {}
+
+            fetch('https://api.ipify.org?format=json')
+                .then(r => r.json())
+                .then(data => {
+                    if (data.ip === ADMIN_IP) {
+                        dom.adminEntry.classList.add('show');
+                        try { localStorage.setItem('smcNight_admin_ip', data.ip); } catch (e) {}
+                    }
+                })
+                .catch(() => {});
+        }
+
+        // ============================================================
+        // ОТОБРАЖЕНИЕ
+        // ============================================================
+
+        // ----- Новости -----
+        function renderNews() {
+            const container = dom.newsDisplay;
+            container.innerHTML = '';
+            newsData.forEach(item => {
+                const el = document.createElement('div');
+                el.className = 'news-item';
+                el.innerHTML = `
+                    <span class="news-item__date">${item.date}</span>
+                    <span>${item.text}</span>
+                    ${item.badge ? `<span class="news-item__badge">${item.badge}</span>` : ''}
+                `;
+                container.appendChild(el);
+            });
+        }
+
+        // ----- Программа передач (с датой и временем) -----
+        let updateInterval = null;
+
+        function renderSchedule() {
+            const container = dom.scheduleDisplay;
+            const now = new Date();
+            const dateStr = now.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric' });
+            const timeStr = now.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+
+            let html = `
+                <div class="schedule__header">
+                    <span>📅 ${dateStr}</span>
+                    <span>🕐 ${timeStr}</span>
+                </div>
+            `;
+
+            const currentMinutes = now.getHours() * 60 + now.getMinutes();
+            let currentIndex = -1;
+            for (let i = scheduleData.length - 1; i >= 0; i--) {
+                const [h, m] = scheduleData[i].time.split(':').map(Number);
+                if (h * 60 + m <= currentMinutes) { currentIndex = i; break; }
+            }
+
+            scheduleData.forEach((item, i) => {
+                const isCurrent = (i === currentIndex);
+                html += `
+                    <div class="schedule__item ${isCurrent ? 'current' : ''}">
+                        <span class="schedule__time">${item.time}</span>
+                        <span class="schedule__program">${item.program}${isCurrent ? ' ◀ Сейчас' : ''}</span>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        function startScheduleUpdates() {
+            renderSchedule();
+            if (updateInterval) clearInterval(updateInterval);
+            updateInterval = setInterval(renderSchedule, 60000);
+        }
+
+        // ----- Видео -----
+        function renderVideos() {
+            const container = dom.videoGrid;
+            container.innerHTML = '';
+            videoData.forEach(item => {
+                const card = document.createElement('button');
+                card.className = 'video-card';
+                card.innerHTML = `
+                    <div class="video-card__title">${item.title}</div>
+                    <div class="video-card__date">📅 ${item.date}</div>
+                    <span class="video-card__play">▶ Смотреть</span>
+                `;
+                card.addEventListener('click', () => openModal(item.title, item.date, item.url));
+                container.appendChild(card);
+            });
+        }
+
+        // ============================================================
+        // МОДАЛКА
+        // ============================================================
+        function openModal(title, date, url) {
+            dom.modalTitle.textContent = title;
+            dom.modalDate.textContent = date;
+            dom.modalVideo.src = url;
+            dom.modal.classList.add('open');
+            document.body.style.overflow = 'hidden';
+            dom.modalVideo.play().catch(() => {});
+        }
+
+        function closeModal() {
+            dom.modal.classList.remove('open');
+            document.body.style.overflow = '';
+            dom.modalVideo.pause();
+            dom.modalVideo.src = '';
+        }
+
+        dom.closeModalBtn.addEventListener('click', closeModal);
+        dom.modal.addEventListener('click', (e) => { if (e.target === dom.modal) closeModal(); });
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+
+        // ============================================================
+        // ВКЛАДКИ
+        // ============================================================
+        function switchTab(tabId) {
+            dom.navBtns.forEach(b => b.classList.toggle('active', b.dataset.tab === tabId));
+            Object.keys(dom.panes).forEach(key => {
+                dom.panes[key].style.display = (key === tabId) ? 'block' : 'none';
+            });
+            if (dom.modal.classList.contains('open')) closeModal();
+        }
+
+        dom.navBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const tab = btn.dataset.tab;
+                if (tab) switchTab(tab);
+            });
+        });
+
+        // ============================================================
+        // ТЕМА
+        // ============================================================
+        function setTheme(theme) {
+            const isDark = theme === 'dark';
+            document.body.classList.toggle('dark', isDark);
+            dom.themeToggle.textContent = isDark ? '🌙 Тёмная' : '☀️ Светлая';
+            try { localStorage.setItem('smcNight-theme', theme); } catch (e) {}
+        }
+
+        function toggleTheme() {
+            const isDark = document.body.classList.contains('dark');
+            setTheme(isDark ? 'light' : 'dark');
+        }
+
+        function loadTheme() {
+            try {
+                const saved = localStorage.getItem('smcNight-theme');
+                if (saved) setTheme(saved);
+            } catch (e) {}
+        }
+
+        dom.themeToggle.addEventListener('click', toggleTheme);
+
+        // ============================================================
+        // СТАТУС ЭФИРА
+        // ============================================================
+        // Показываем плеер всегда, если CatCast не грузится — будет видно ошибку
+        // Можно добавить fallback, но пока оставляем как есть
+
+        // ============================================================
+        // ЗАПУСК
+        // ============================================================
+        renderNews();
+        startScheduleUpdates();
+        renderVideos();
+        loadTheme();
+        checkAdmin();
+
+        // Показываем первую вкладку
+        switchTab('home');
+
+        console.log('✅ smcNight — сайт загружен');
+        console.log('📦 Новостей: ' + newsData.length);
+        console.log('📅 Программ: ' + scheduleData.length);
+        console.log('🎬 Видео: ' + videoData.length);
+
+    })();
+</script>
+
+</body>
+</html>
