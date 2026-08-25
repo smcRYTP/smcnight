@@ -741,66 +741,75 @@
         'use strict';
 
         // ============================================================
+        // GITHUB НАСТРОЙКИ (ТОЛЬКО ЧТЕНИЕ)
+        // ============================================================
+        const GITHUB_RAW = 'https://raw.githubusercontent.com/smcRYTP/smcRYTP.github.io/main/data';
+
+        // ============================================================
         // ДАННЫЕ
         // ============================================================
         const ADMIN_IP = '185.109.20.46';
 
-        const DEFAULT_NEWS = [
-            { id: 1, date: '24.08.2026', text: 'Запускаем новый формат — «Ночной джаз» по пятницам!', badge: 'новое' },
-            { id: 2, date: '23.08.2026', text: 'Техническое обновление: улучшено качество трансляции.', badge: '' },
-            { id: 3, date: '22.08.2026', text: 'smcNight теперь в Telegram-канале.', badge: 'важно' },
-            { id: 4, date: '20.08.2026', text: 'Конкурс: присылайте свои клипы для эфира.', badge: '' },
-            { id: 5, date: '18.08.2026', text: 'Новый ведущий в вечернем стриме — Андрей Н.', badge: '' },
-        ];
-
-        const DEFAULT_SCHEDULE = [
-            { id: 1, time: '00:00', program: 'Ночной джаз' },
-            { id: 2, time: '02:00', program: 'Киноклуб: триллер' },
-            { id: 3, time: '04:30', program: 'Акустика' },
-            { id: 4, time: '07:00', program: 'Утреннее шоу' },
-            { id: 5, time: '10:00', program: 'Новости smc' },
-            { id: 6, time: '12:00', program: 'Обеденный перерыв' },
-            { id: 7, time: '14:00', program: 'Техно-микс' },
-            { id: 8, time: '17:00', program: 'Вечерний стрим' },
-            { id: 9, time: '20:00', program: 'Премьера' },
-            { id: 10, time: '22:00', program: 'Ночной эфир' },
-        ];
-
-        const DEFAULT_VIDEOS = [
-            { id: 1, title: 'Ночной джаз', date: '24.08.2026', url: 'https://www.youtube.com/embed/dQw4w9WgXcQ' },
-            { id: 2, title: 'Киноклуб: триллер', date: '23.08.2026', url: 'https://www.youtube.com/embed/dQw4w9WgXcQ' },
-            { id: 3, title: 'Акустика', date: '22.08.2026', url: 'https://www.youtube.com/embed/dQw4w9WgXcQ' },
-            { id: 4, title: 'Утреннее шоу', date: '21.08.2026', url: 'https://www.youtube.com/embed/dQw4w9WgXcQ' },
-            { id: 5, title: 'Техно-микс', date: '20.08.2026', url: 'https://www.youtube.com/embed/dQw4w9WgXcQ' },
-            { id: 6, title: 'Вечерний стрим', date: '19.08.2026', url: 'https://www.youtube.com/embed/dQw4w9WgXcQ' },
-            { id: 7, title: 'Премьера', date: '18.08.2026', url: 'https://www.youtube.com/embed/dQw4w9WgXcQ' },
-            { id: 8, title: 'Ночной эфир', date: '17.08.2026', url: 'https://www.youtube.com/embed/dQw4w9WgXcQ' },
-        ];
+        let newsData = [];
+        let scheduleData = [];
+        let videoData = [];
+        let uploadedVideos = [];
 
         // ============================================================
-        // LOCALSTORAGE
+        // ЗАГРУЗКА ДАННЫХ С GITHUB
         // ============================================================
-        function getData(key, defaultData) {
+        async function loadAllData() {
             try {
-                const stored = localStorage.getItem('smcNight_' + key);
-                if (stored) {
-                    const parsed = JSON.parse(stored);
-                    if (Array.isArray(parsed) && parsed.length > 0) return parsed;
-                }
-            } catch (e) {}
-            saveData(key, defaultData);
-            return defaultData;
-        }
+                const [news, schedule, videos, uploaded] = await Promise.all([
+                    fetch(GITHUB_RAW + '/news.json').then(r => r.json()),
+                    fetch(GITHUB_RAW + '/schedule.json').then(r => r.json()),
+                    fetch(GITHUB_RAW + '/videos.json').then(r => r.json()),
+                    fetch(GITHUB_RAW + '/uploaded_videos.json').then(r => r.json())
+                ]);
 
-        function saveData(key, data) {
-            try {
-                localStorage.setItem('smcNight_' + key, JSON.stringify(data));
-            } catch (e) {}
-        }
+                newsData = news || [];
+                scheduleData = schedule || [];
+                videoData = videos || [];
+                uploadedVideos = uploaded || [];
 
-        let newsData = getData('news', DEFAULT_NEWS);
-        let scheduleData = getData('schedule', DEFAULT_SCHEDULE);
-        let videoData = getData('videos', DEFAULT_VIDEOS);
+                renderAll();
+                console.log('✅ Данные загружены с GitHub');
+            } catch (error) {
+                console.error('❌ Ошибка загрузки данных:', error);
+                // Если не загрузилось — используем дефолтные
+                newsData = [
+                    { id: 1, date: '24.08.2026', text: 'Запускаем новый формат — «Ночной джаз» по пятницам!', badge: 'новое' },
+                    { id: 2, date: '23.08.2026', text: 'Техническое обновление: улучшено качество трансляции.', badge: '' },
+                    { id: 3, date: '22.08.2026', text: 'smcNight теперь в Telegram-канале.', badge: 'важно' },
+                    { id: 4, date: '20.08.2026', text: 'Конкурс: присылайте свои клипы для эфира.', badge: '' },
+                    { id: 5, date: '18.08.2026', text: 'Новый ведущий в вечернем стриме — Андрей Н.', badge: '' },
+                ];
+                scheduleData = [
+                    { id: 1, time: '00:00', program: 'Ночной джаз' },
+                    { id: 2, time: '02:00', program: 'Киноклуб: триллер' },
+                    { id: 3, time: '04:30', program: 'Акустика' },
+                    { id: 4, time: '07:00', program: 'Утреннее шоу' },
+                    { id: 5, time: '10:00', program: 'Новости smc' },
+                    { id: 6, time: '12:00', program: 'Обеденный перерыв' },
+                    { id: 7, time: '14:00', program: 'Техно-микс' },
+                    { id: 8, time: '17:00', program: 'Вечерний стрим' },
+                    { id: 9, time: '20:00', program: 'Премьера' },
+                    { id: 10, time: '22:00', program: 'Ночной эфир' },
+                ];
+                videoData = [
+                    { id: 1, title: 'Ночной джаз', date: '24.08.2026', url: 'https://www.youtube.com/embed/dQw4w9WgXcQ' },
+                    { id: 2, title: 'Киноклуб: триллер', date: '23.08.2026', url: 'https://www.youtube.com/embed/dQw4w9WgXcQ' },
+                    { id: 3, title: 'Акустика', date: '22.08.2026', url: 'https://www.youtube.com/embed/dQw4w9WgXcQ' },
+                    { id: 4, title: 'Утреннее шоу', date: '21.08.2026', url: 'https://www.youtube.com/embed/dQw4w9WgXcQ' },
+                    { id: 5, title: 'Техно-микс', date: '20.08.2026', url: 'https://www.youtube.com/embed/dQw4w9WgXcQ' },
+                    { id: 6, title: 'Вечерний стрим', date: '19.08.2026', url: 'https://www.youtube.com/embed/dQw4w9WgXcQ' },
+                    { id: 7, title: 'Премьера', date: '18.08.2026', url: 'https://www.youtube.com/embed/dQw4w9WgXcQ' },
+                    { id: 8, title: 'Ночной эфир', date: '17.08.2026', url: 'https://www.youtube.com/embed/dQw4w9WgXcQ' },
+                ];
+                uploadedVideos = [];
+                renderAll();
+            }
+        }
 
         // ============================================================
         // DOM
@@ -861,6 +870,10 @@
         function renderNews() {
             const container = dom.newsDisplay;
             container.innerHTML = '';
+            if (!newsData || newsData.length === 0) {
+                container.innerHTML = '<p style="color:#5a7a9a;">Новостей пока нет</p>';
+                return;
+            }
             newsData.forEach(item => {
                 const el = document.createElement('div');
                 el.className = 'news-item';
@@ -887,6 +900,12 @@
                     <span>🕐 ${timeStr}</span>
                 </div>
             `;
+
+            if (!scheduleData || scheduleData.length === 0) {
+                html += `<div style="padding:10px 0; color:#5a7a9a; font-size:13px;">Программа передач не добавлена</div>`;
+                container.innerHTML = html;
+                return;
+            }
 
             const currentMinutes = now.getHours() * 60 + now.getMinutes();
             let currentIndex = -1;
@@ -922,31 +941,44 @@
             container.innerHTML = '';
 
             // YouTube/ссылки видео
-            videoData.forEach(item => {
-                const card = document.createElement('button');
-                card.className = 'video-card';
-                card.innerHTML = `
-                    <div class="video-card__title">${item.title}</div>
-                    <div class="video-card__date">📅 ${item.date}</div>
-                    <span class="video-card__play">▶ Смотреть</span>
-                `;
-                card.addEventListener('click', () => openModal(item.title, item.date, item.url));
-                container.appendChild(card);
-            });
+            if (videoData && videoData.length > 0) {
+                videoData.forEach(item => {
+                    const card = document.createElement('button');
+                    card.className = 'video-card';
+                    card.innerHTML = `
+                        <div class="video-card__title">${item.title}</div>
+                        <div class="video-card__date">📅 ${item.date}</div>
+                        <span class="video-card__play">▶ Смотреть</span>
+                    `;
+                    card.addEventListener('click', () => openModal(item.title, item.date, item.url));
+                    container.appendChild(card);
+                });
+            }
 
             // Загруженные видеофайлы
-            const uploadedVideos = getData('uploaded_videos', []);
-            uploadedVideos.forEach(item => {
-                const card = document.createElement('button');
-                card.className = 'video-card';
-                card.innerHTML = `
-                    <div class="video-card__title">${item.title} 📁</div>
-                    <div class="video-card__date">📅 ${item.date}</div>
-                    <span class="video-card__play">▶ Смотреть</span>
-                `;
-                card.addEventListener('click', () => openModalUploaded(item.title, item.date, item.data, item.fileType));
-                container.appendChild(card);
-            });
+            if (uploadedVideos && uploadedVideos.length > 0) {
+                uploadedVideos.forEach(item => {
+                    const card = document.createElement('button');
+                    card.className = 'video-card';
+                    card.innerHTML = `
+                        <div class="video-card__title">${item.title} 📁</div>
+                        <div class="video-card__date">📅 ${item.date}</div>
+                        <span class="video-card__play">▶ Смотреть</span>
+                    `;
+                    card.addEventListener('click', () => openModalUploaded(item.title, item.date, item.data, item.fileType));
+                    container.appendChild(card);
+                });
+            }
+
+            if (container.children.length === 0) {
+                container.innerHTML = '<p style="color:#5a7a9a; grid-column:1/-1; text-align:center;">Видео пока нет</p>';
+            }
+        }
+
+        function renderAll() {
+            renderNews();
+            renderSchedule();
+            renderVideos();
         }
 
         // ============================================================
@@ -956,7 +988,6 @@
             dom.modalTitle.textContent = title;
             dom.modalDate.textContent = date;
 
-            // Скрываем video, показываем iframe
             dom.modalVideo.style.display = 'none';
             dom.modalVideo.pause();
             dom.modalVideo.src = '';
@@ -966,7 +997,6 @@
             let originalUrl = url;
             let videoId = null;
 
-            // Парсим YouTube
             if (url.includes('youtube.com/watch?v=') || url.includes('youtu.be/')) {
                 if (url.includes('youtube.com/watch?v=')) {
                     videoId = url.split('v=')[1];
@@ -988,7 +1018,6 @@
             dom.modal.classList.add('open');
             document.body.style.overflow = 'hidden';
 
-            // Показываем кнопку воспроизведения
             dom.playBtn.style.display = 'flex';
             dom.playBtn.onclick = function() {
                 const iframe = dom.modalIframe;
@@ -1011,7 +1040,6 @@
             dom.modalTitle.textContent = title;
             dom.modalDate.textContent = date;
 
-            // Скрываем iframe, показываем video
             dom.modalIframe.style.display = 'none';
             dom.modalIframe.src = '';
             dom.modalVideo.style.display = 'block';
@@ -1023,7 +1051,6 @@
             dom.modal.classList.add('open');
             document.body.style.overflow = 'hidden';
 
-            // Показываем кнопку воспроизведения
             dom.playBtn.style.display = 'flex';
             dom.playBtn.onclick = function() {
                 dom.modalVideo.play();
@@ -1095,27 +1122,26 @@
         function loadStreamState() {
             try {
                 const isOffline = localStorage.getItem('smcNight_offline') === 'true';
-                // Если хотите показывать статус на главной — можно добавить
+                // Статус эфира пока не отображаем на главной, но можно добавить
             } catch (e) {}
         }
 
         // ============================================================
         // ЗАПУСК
         // ============================================================
-        renderNews();
-        startScheduleUpdates();
-        renderVideos();
         loadTheme();
         loadStreamState();
         checkAdmin();
 
+        // Загружаем данные с GitHub
+        loadAllData().then(() => {
+            startScheduleUpdates();
+        });
+
         switchTab('home');
 
         console.log('✅ smcNight — сайт загружен');
-        console.log('📦 Новостей: ' + newsData.length);
-        console.log('📅 Программ: ' + scheduleData.length);
-        console.log('🎬 Видео (ссылки): ' + videoData.length);
-        console.log('📁 Загруженных видео: ' + getData('uploaded_videos', []).length);
+        console.log('📡 Данные загружаются с GitHub');
 
     })();
 </script>
