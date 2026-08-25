@@ -1,4 +1,14 @@
 [
-  {"id":1,"title":"Ночной джаз","date":"24.08.2026","url":"https://www.youtube.com/embed/dQw4w9WgXcQ"},
-  {"id":2,"title":"Киноклуб: триллер","date":"23.08.2026","url":"https://www.youtube.com/embed/dQw4w9WgXcQ"}
+  {
+    "id": 1,
+    "title": "ÐÐ¾ÑÐ½Ð¾Ð¹ Ð´Ð¶Ð°Ð·",
+    "date": "24.08.2026",
+    "url": "https://www.youtube.com/embed/dQw4w9WgXcQ"
+  },
+  {
+    "id": 2,
+    "title": "ÐÐ¸Ð½Ð¾ÐºÐ»ÑÐ±: ÑÑÐ¸Ð»Ð»ÐµÑ",
+    "date": "23.08.2026",
+    "url": "https://www.youtube.com/embed/dQw4w9WgXcQ"
+  }
 ]
