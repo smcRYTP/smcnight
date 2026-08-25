@@ -1,0 +1,1778 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+    <meta name="description" content="smcNight — любительский интернет-канал из Арсеньева" />
+    <title>smcNight — интернет-канал</title>
+
+    <style>
+        /* ============================================================
+                   ROOT VARIABLES
+                   ============================================================ */
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --color-bg: #f5f8fc;
+            --color-bg-card: #ffffff;
+            --color-bg-header: #ffffff;
+            --color-bg-nav: #e9eff6;
+            --color-text: #1a2a3e;
+            --color-text-secondary: #5a7a9a;
+            --color-text-muted: #8aaac0;
+            --color-accent: #2b7be4;
+            --color-accent-hover: #1a5fb0;
+            --color-accent-light: #dce8f8;
+            --color-border: #d0ddee;
+            --color-border-hover: #b0c8e0;
+            --color-shadow: rgba(26, 42, 62, 0.06);
+            --color-shadow-hover: rgba(26, 42, 62, 0.12);
+            --color-player-bg: #0a0a0a;
+            --color-overlay: rgba(0, 0, 0, 0.4);
+            --color-danger: #d45a5a;
+            --color-success: #2d9b5e;
+            --color-warning: #e8a838;
+            --radius: 12px;
+            --radius-sm: 8px;
+            --radius-lg: 20px;
+            --shadow: 0 2px 12px var(--color-shadow);
+            --shadow-hover: 0 8px 32px var(--color-shadow-hover);
+            --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            --max-width: 1400px;
+            --font: 'Segoe UI', 'Segoe UI Web', -apple-system, BlinkMacSystemFont, 
+                   'Roboto', 'Helvetica Neue', Arial, sans-serif;
+            --padding-body: 20px;
+            --padding-card: 28px 32px;
+            --padding-header: 16px 28px;
+            --padding-nav: 6px;
+            --gap-nav: 4px;
+            --font-size-title: 22px;
+            --logo-size: 56px;
+        }
+
+        [data-theme="dark"] {
+            --color-bg: #0d1a2b;
+            --color-bg-card: #152a40;
+            --color-bg-header: #0f1f32;
+            --color-bg-nav: #1a2f45;
+            --color-text: #e8f0f8;
+            --color-text-secondary: #90b0d0;
+            --color-text-muted: #6080a0;
+            --color-accent: #4a9eff;
+            --color-accent-hover: #6db4ff;
+            --color-accent-light: #1a3a5c;
+            --color-border: #2a4a6a;
+            --color-border-hover: #3a5a7a;
+            --color-shadow: rgba(0, 0, 0, 0.3);
+            --color-shadow-hover: rgba(0, 0, 0, 0.5);
+            --color-player-bg: #0a0a0a;
+            --color-overlay: rgba(0, 0, 0, 0.7);
+            --color-success: #44bb77;
+            --color-warning: #d4a838;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            -webkit-text-size-adjust: 100%;
+        }
+
+        body {
+            font-family: var(--font);
+            background: var(--color-bg);
+            color: var(--color-text);
+            transition: background var(--transition), color var(--transition);
+            min-height: 100vh;
+            line-height: 1.6;
+            padding: var(--padding-body);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* ============================================================
+                   HEADER
+                   ============================================================ */
+        .header {
+            max-width: var(--max-width);
+            margin: 0 auto 24px;
+            background: var(--color-bg-header);
+            border-radius: var(--radius-lg);
+            padding: var(--padding-header);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--color-border);
+            transition: all var(--transition);
+        }
+
+        .header__brand {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .header__logo-img {
+            height: var(--logo-size);
+            width: auto;
+            display: block;
+            transition: all var(--transition);
+            flex-shrink: 0;
+        }
+
+        .header__logo-text {
+            display: flex;
+            align-items: baseline;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .header__logo {
+            font-size: 32px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            color: var(--color-text);
+            transition: color var(--transition);
+        }
+
+        .header__logo span {
+            color: var(--color-accent);
+        }
+
+        .header__tagline {
+            font-size: 14px;
+            font-weight: 400;
+            color: var(--color-text-secondary);
+            letter-spacing: 0.3px;
+            transition: color var(--transition);
+            background: var(--color-accent-light);
+            padding: 2px 12px;
+            border-radius: 20px;
+            border: 1px solid var(--color-border);
+        }
+
+        .header__actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .theme-toggle {
+            background: var(--color-bg-nav);
+            border: 1px solid var(--color-border);
+            color: var(--color-text);
+            padding: 8px 18px;
+            border-radius: 40px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: var(--font);
+            white-space: nowrap;
+        }
+
+        .theme-toggle:hover {
+            background: var(--color-accent-light);
+            border-color: var(--color-accent);
+            transform: translateY(-1px);
+        }
+
+        .theme-toggle:active {
+            transform: scale(0.97);
+        }
+
+        /* ============================================================
+                   NAVIGATION
+                   ============================================================ */
+        .nav {
+            max-width: var(--max-width);
+            margin: 0 auto 28px;
+            background: var(--color-bg-nav);
+            border-radius: var(--radius-lg);
+            padding: var(--padding-nav);
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--gap-nav);
+            border: 1px solid var(--color-border);
+            transition: all var(--transition);
+            box-shadow: var(--shadow);
+        }
+
+        .nav__btn {
+            background: transparent;
+            border: none;
+            color: var(--color-text-secondary);
+            font-size: 15px;
+            font-weight: 500;
+            padding: 10px 24px;
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: all var(--transition);
+            font-family: var(--font);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex: 0 1 auto;
+            -webkit-tap-highlight-color: transparent;
+            white-space: nowrap;
+        }
+
+        .nav__btn:hover {
+            color: var(--color-text);
+            background: var(--color-bg-card);
+            box-shadow: 0 2px 8px var(--color-shadow);
+        }
+
+        .nav__btn.active {
+            background: var(--color-accent);
+            color: #ffffff;
+            box-shadow: 0 4px 16px rgba(43, 123, 228, 0.3);
+        }
+
+        .nav__btn.active:hover {
+            background: var(--color-accent-hover);
+            box-shadow: 0 4px 20px rgba(43, 123, 228, 0.4);
+        }
+
+        .nav__btn .icon {
+            font-size: 18px;
+            line-height: 1;
+        }
+
+        /* ============================================================
+                   ADMIN ENTRY (только для админа)
+                   ============================================================ */
+        .admin-entry {
+            display: none;
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .admin-entry.show {
+            display: block;
+        }
+
+        .admin-entry__link {
+            display: inline-block;
+            padding: 8px 20px;
+            background: var(--color-accent);
+            color: #fff;
+            border-radius: var(--radius-sm);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all var(--transition);
+            font-family: var(--font);
+        }
+
+        .admin-entry__link:hover {
+            background: var(--color-accent-hover);
+            transform: scale(1.03);
+        }
+
+        /* ============================================================
+                   CONTENT
+                   ============================================================ */
+        .content {
+            max-width: var(--max-width);
+            margin: 0 auto;
+        }
+
+        .pane {
+            display: none;
+            animation: fadeSlide 0.4s ease;
+        }
+
+        .pane.active {
+            display: block;
+        }
+
+        @keyframes fadeSlide {
+            0% {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card {
+            background: var(--color-bg-card);
+            border-radius: var(--radius-lg);
+            padding: var(--padding-card);
+            border: 1px solid var(--color-border);
+            box-shadow: var(--shadow);
+            transition: all var(--transition);
+            margin-bottom: 24px;
+        }
+
+        .card:hover {
+            box-shadow: var(--shadow-hover);
+        }
+
+        .card__title {
+            font-size: var(--font-size-title);
+            font-weight: 600;
+            margin-bottom: 18px;
+            color: var(--color-text);
+            transition: color var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card__title .icon {
+            font-size: 24px;
+        }
+
+        .card__subtitle {
+            font-size: 15px;
+            color: var(--color-text-secondary);
+            margin-bottom: 16px;
+            transition: color var(--transition);
+        }
+
+        /* ============================================================
+                   LIVE LAYOUT (плеер и программа передач РЯДОМ)
+                   ============================================================ */
+        .live-layout {
+            display: grid;
+            grid-template-columns: 1fr 280px;
+            gap: 20px;
+            align-items: stretch;
+        }
+
+        .live-layout__player {
+            position: relative;
+        }
+
+        .live-layout__schedule {
+            background: var(--color-bg-nav);
+            border-radius: var(--radius);
+            padding: 16px 18px;
+            border: 1px solid var(--color-border);
+            max-height: 400px;
+            overflow-y: auto;
+            transition: background var(--transition), border-color var(--transition);
+        }
+
+        .live-layout__schedule::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .live-layout__schedule::-webkit-scrollbar-track {
+            background: var(--color-border);
+            border-radius: 10px;
+        }
+
+        .live-layout__schedule::-webkit-scrollbar-thumb {
+            background: var(--color-accent);
+            border-radius: 10px;
+        }
+
+        .live-layout__schedule-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--color-text-secondary);
+            margin-bottom: 12px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            font-family: var(--font);
+        }
+
+        .live-layout__schedule-item {
+            display: grid;
+            grid-template-columns: 55px 1fr;
+            gap: 12px;
+            padding: 6px 0;
+            border-bottom: 1px solid var(--color-border);
+            align-items: center;
+            transition: background var(--transition);
+        }
+
+        .live-layout__schedule-item:last-child {
+            border-bottom: none;
+        }
+
+        .live-layout__schedule-item:hover {
+            background: var(--color-bg-card);
+            margin: 0 -8px;
+            padding: 6px 8px;
+            border-radius: var(--radius-sm);
+        }
+
+        .live-layout__schedule-time {
+            color: var(--color-accent);
+            font-weight: 600;
+            font-size: 12px;
+            letter-spacing: 0.3px;
+            font-family: var(--font);
+        }
+
+        .live-layout__schedule-program {
+            color: var(--color-text);
+            font-size: 13px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            font-family: var(--font);
+        }
+
+        /* ============================================================
+                   PLAYER
+                   ============================================================ */
+        .player-wrapper {
+            background: var(--color-player-bg);
+            border-radius: var(--radius);
+            overflow: hidden;
+            aspect-ratio: 16 / 9;
+            width: 100%;
+            border: 1px solid var(--color-border);
+            transition: all var(--transition);
+            position: relative;
+        }
+
+        .player-wrapper iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: block;
+        }
+
+        .player-offline {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: #0a0a0a;
+            color: #ffffff;
+            font-family: var(--font);
+            z-index: 3;
+            text-align: center;
+            padding: 20px;
+            pointer-events: none;
+        }
+
+        .player-offline.hidden {
+            display: none;
+        }
+
+        .player-offline__icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+            opacity: 0.4;
+        }
+
+        .player-offline__title {
+            font-size: 20px;
+            font-weight: 400;
+            color: rgba(255, 255, 255, 0.6);
+            letter-spacing: 1px;
+        }
+
+        .player-offline__subtitle {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.3);
+            margin-top: 4px;
+            letter-spacing: 0.5px;
+        }
+
+        .player-placeholder {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: #0a0a0a;
+            color: #ffffff;
+            font-family: var(--font);
+            z-index: 1;
+            text-align: center;
+            padding: 20px;
+            transition: opacity 0.5s ease;
+            pointer-events: none;
+        }
+
+        .player-placeholder.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .player-placeholder__icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+            opacity: 0.3;
+            letter-spacing: 2px;
+        }
+
+        .player-placeholder__title {
+            font-size: 14px;
+            font-weight: 400;
+            color: rgba(255, 255, 255, 0.5);
+            letter-spacing: 1px;
+            font-family: var(--font);
+        }
+
+        .player-placeholder__subtitle {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.25);
+            margin-top: 2px;
+            letter-spacing: 0.5px;
+            font-family: var(--font);
+        }
+
+        .player-placeholder__status {
+            margin-top: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.2);
+            letter-spacing: 0.5px;
+            font-family: var(--font);
+        }
+
+        .player-placeholder__status .dot {
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #ff4444;
+            animation: pulse-dot 2s infinite;
+        }
+
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.2; transform: scale(0.7); }
+        }
+
+        /* ============================================================
+                   NEWS
+                   ============================================================ */
+        .news-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .news-item {
+            padding: 14px 16px;
+            border-radius: var(--radius-sm);
+            border-left: 3px solid var(--color-accent);
+            background: var(--color-bg-nav);
+            transition: all var(--transition);
+            display: flex;
+            flex-wrap: wrap;
+            align-items: baseline;
+            gap: 8px 16px;
+        }
+
+        .news-item:hover {
+            background: var(--color-accent-light);
+            transform: translateX(4px);
+        }
+
+        .news-item__date {
+            color: var(--color-accent);
+            font-weight: 600;
+            font-size: 13px;
+            white-space: nowrap;
+            font-family: var(--font);
+        }
+
+        .news-item__text {
+            color: var(--color-text);
+            font-size: 15px;
+            flex: 1;
+            font-family: var(--font);
+        }
+
+        .news-item__badge {
+            background: var(--color-accent);
+            color: #fff;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 2px 12px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-family: var(--font);
+        }
+
+        /* ============================================================
+                   PROGRAMS GRID
+                   ============================================================ */
+        .programs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 16px;
+            margin-top: 4px;
+        }
+
+        .program-card {
+            background: var(--color-bg-nav);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius);
+            padding: 20px 18px;
+            cursor: pointer;
+            transition: all var(--transition);
+            text-align: left;
+            font-family: var(--font);
+            color: var(--color-text);
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .program-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-hover);
+            border-color: var(--color-accent);
+            background: var(--color-bg-card);
+        }
+
+        .program-card:active {
+            transform: scale(0.98);
+        }
+
+        .program-card__title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--color-text);
+            font-family: var(--font);
+        }
+
+        .program-card__date {
+            font-size: 13px;
+            color: var(--color-text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-family: var(--font);
+        }
+
+        .program-card__date .icon {
+            font-size: 14px;
+        }
+
+        .program-card__play {
+            margin-top: 8px;
+            color: var(--color-accent);
+            font-size: 13px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            opacity: 0;
+            transition: opacity var(--transition);
+            font-family: var(--font);
+        }
+
+        .program-card:hover .program-card__play {
+            opacity: 1;
+        }
+
+        /* ============================================================
+                   INFO
+                   ============================================================ */
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px 40px;
+        }
+
+        .info-item {
+            padding: 14px 0;
+            border-bottom: 1px solid var(--color-border);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px 16px;
+            align-items: baseline;
+        }
+
+        .info-item__label {
+            font-weight: 600;
+            color: var(--color-text-secondary);
+            min-width: 160px;
+            font-size: 15px;
+            font-family: var(--font);
+        }
+
+        .info-item__value {
+            color: var(--color-text);
+            font-size: 15px;
+            font-weight: 500;
+            font-family: var(--font);
+        }
+
+        .info-item__value .highlight {
+            color: var(--color-accent);
+        }
+
+        .info-item__value a {
+            color: var(--color-accent);
+            text-decoration: none;
+            transition: color var(--transition);
+            font-family: var(--font);
+        }
+
+        .info-item__value a:hover {
+            color: var(--color-accent-hover);
+            text-decoration: underline;
+        }
+
+        .info-description {
+            margin-top: 24px;
+            padding: 24px 28px;
+            background: var(--color-bg-nav);
+            border-radius: var(--radius);
+            border-left: 4px solid var(--color-accent);
+            line-height: 1.8;
+            color: var(--color-text-secondary);
+            font-size: 15px;
+            font-family: var(--font);
+        }
+
+        .info-description strong {
+            color: var(--color-text);
+            font-family: var(--font);
+        }
+
+        .info-description .highlight {
+            color: var(--color-accent);
+            font-weight: 600;
+            font-family: var(--font);
+        }
+
+        .info-description p {
+            font-family: var(--font);
+        }
+
+        /* ============================================================
+                   ADS
+                   ============================================================ */
+        .ads-block {
+            background: var(--color-bg-nav);
+            border-radius: var(--radius);
+            padding: 24px 28px;
+            border: 1px solid var(--color-border);
+            transition: all var(--transition);
+        }
+
+        .ads-block:hover {
+            border-color: var(--color-border-hover);
+        }
+
+        .ads-block__title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: var(--color-text);
+            font-family: var(--font);
+        }
+
+        .ads-block__subtitle {
+            font-size: 14px;
+            color: var(--color-text-secondary);
+            margin-bottom: 16px;
+            font-family: var(--font);
+        }
+
+        .ads-block__free {
+            display: inline-block;
+            background: var(--color-success);
+            color: #fff;
+            font-size: 13px;
+            font-weight: 600;
+            padding: 4px 16px;
+            border-radius: 20px;
+            margin-bottom: 16px;
+            letter-spacing: 0.5px;
+            font-family: var(--font);
+        }
+
+        .contacts-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .contacts-list li {
+            padding: 10px 14px;
+            border-radius: var(--radius-sm);
+            background: var(--color-bg-card);
+            border: 1px solid var(--color-border);
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 8px 16px;
+            transition: all var(--transition);
+        }
+
+        .contacts-list li:hover {
+            border-color: var(--color-accent);
+            transform: translateX(4px);
+        }
+
+        .contacts-list .label {
+            font-weight: 600;
+            color: var(--color-text-secondary);
+            min-width: 80px;
+            font-size: 14px;
+            font-family: var(--font);
+        }
+
+        .contacts-list .value {
+            color: var(--color-text);
+            font-size: 15px;
+            font-family: var(--font);
+        }
+
+        .contacts-list .value a {
+            color: var(--color-accent);
+            text-decoration: none;
+            transition: color var(--transition);
+            font-family: var(--font);
+        }
+
+        .contacts-list .value a:hover {
+            color: var(--color-accent-hover);
+            text-decoration: underline;
+        }
+
+        /* ============================================================
+                   MODAL
+                   ============================================================ */
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: var(--color-overlay);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal.open {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+
+        .modal__content {
+            background: var(--color-bg-card);
+            border-radius: var(--radius-lg);
+            max-width: 880px;
+            width: 100%;
+            padding: 24px;
+            border: 1px solid var(--color-border);
+            box-shadow: 0 24px 80px rgba(0, 0, 0, 0.4);
+            position: relative;
+            animation: slideUp 0.35s ease;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        @keyframes slideUp {
+            0% {
+                opacity: 0;
+                transform: translateY(30px) scale(0.97);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .modal__close {
+            position: absolute;
+            top: 12px;
+            right: 16px;
+            font-size: 28px;
+            background: none;
+            border: none;
+            color: var(--color-text-secondary);
+            cursor: pointer;
+            transition: all var(--transition);
+            line-height: 1;
+            padding: 4px 8px;
+            border-radius: var(--radius-sm);
+            font-family: var(--font);
+        }
+
+        .modal__close:hover {
+            color: var(--color-danger);
+            background: var(--color-bg-nav);
+            transform: rotate(90deg);
+        }
+
+        .modal__player {
+            aspect-ratio: 16 / 9;
+            width: 100%;
+            background: var(--color-player-bg);
+            border-radius: var(--radius);
+            overflow: hidden;
+            border: 1px solid var(--color-border);
+            position: relative;
+        }
+
+        .modal__player video {
+            width: 100%;
+            height: 100%;
+            display: block;
+            background: #000;
+        }
+
+        .modal__player video::-webkit-media-controls {
+            background: rgba(0, 0, 0, 0.7);
+        }
+
+        .modal__title {
+            margin: 16px 0 4px;
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--color-text);
+            font-family: var(--font);
+        }
+
+        .modal__date {
+            color: var(--color-text-secondary);
+            font-size: 15px;
+            font-family: var(--font);
+        }
+
+        /* ============================================================
+                   FOOTER
+                   ============================================================ */
+        .footer {
+            max-width: var(--max-width);
+            margin: 40px auto 0;
+            padding: 20px 28px;
+            text-align: center;
+            color: var(--color-text-muted);
+            font-size: 14px;
+            border-top: 1px solid var(--color-border);
+            transition: all var(--transition);
+        }
+
+        .footer p {
+            font-family: var(--font);
+        }
+
+        .footer a {
+            color: var(--color-accent);
+            text-decoration: none;
+            transition: color var(--transition);
+            font-family: var(--font);
+        }
+
+        .footer a:hover {
+            color: var(--color-accent-hover);
+            text-decoration: underline;
+        }
+
+        /* ============================================================
+                   RESPONSIVE
+                   ============================================================ */
+        @media (max-width: 1024px) {
+            :root {
+                --max-width: 1200px;
+                --padding-card: 24px 28px;
+                --font-size-title: 21px;
+                --logo-size: 50px;
+            }
+            .header__logo { font-size: 28px; }
+            .live-layout { grid-template-columns: 1fr 240px; gap: 16px; }
+            .programs-grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; }
+            .info-grid { grid-template-columns: 1fr 1fr; gap: 16px 30px; }
+            .live-layout__schedule { max-height: 340px; }
+        }
+
+        @media (max-width: 820px) {
+            :root {
+                --max-width: 100%;
+                --padding-body: 14px;
+                --padding-card: 20px;
+                --padding-header: 14px 18px;
+                --padding-nav: 4px;
+                --gap-nav: 2px;
+                --font-size-title: 19px;
+                --logo-size: 48px;
+            }
+            .header { flex-direction: column; align-items: center; gap: 10px; margin-bottom: 18px; }
+            .header__brand { justify-content: center; text-align: center; flex-direction: row; align-items: center; gap: 12px; }
+            .header__logo-img { height: var(--logo-size); }
+            .header__logo { font-size: 26px; }
+            .header__tagline { font-size: 12px; padding: 1px 10px; }
+            .header__actions { justify-content: center; }
+            .theme-toggle { font-size: 13px; padding: 6px 14px; }
+            .nav { padding: 4px; gap: 2px; margin-bottom: 20px; border-radius: var(--radius); overflow: hidden; }
+            .nav__btn { padding: 8px 12px; font-size: 13px; flex: 1 1 auto; justify-content: center; border-radius: var(--radius-sm); }
+            .nav__btn .icon { font-size: 16px; }
+            .card { margin-bottom: 18px; border-radius: var(--radius); }
+            .card__title { font-size: 19px; margin-bottom: 14px; }
+            .card__subtitle { font-size: 14px; }
+            .live-layout { grid-template-columns: 1fr; gap: 16px; }
+            .live-layout__schedule { max-height: 200px; padding: 14px 16px; }
+            .live-layout__schedule-item { grid-template-columns: 50px 1fr; gap: 10px; padding: 5px 0; }
+            .live-layout__schedule-time { font-size: 12px; }
+            .live-layout__schedule-program { font-size: 13px; }
+            .news-item { padding: 12px 14px; gap: 6px 12px; }
+            .news-item__date { font-size: 12px; }
+            .news-item__text { font-size: 14px; }
+            .news-item__badge { font-size: 10px; padding: 1px 10px; }
+            .programs-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
+            .program-card { padding: 16px 14px; }
+            .program-card__title { font-size: 14px; }
+            .program-card__date { font-size: 12px; }
+            .program-card__play { font-size: 12px; }
+            .info-grid { grid-template-columns: 1fr; gap: 4px; }
+            .info-item { padding: 10px 0; gap: 4px 12px; }
+            .info-item__label { min-width: 120px; font-size: 14px; }
+            .info-item__value { font-size: 14px; }
+            .info-description { padding: 18px 20px; margin-top: 18px; font-size: 14px; }
+            .ads-block { padding: 18px 20px; }
+            .ads-block__title { font-size: 17px; }
+            .ads-block__subtitle { font-size: 14px; }
+            .contacts-list li { padding: 8px 12px; gap: 6px 12px; }
+            .contacts-list .label { font-size: 13px; min-width: 70px; }
+            .contacts-list .value { font-size: 14px; }
+            .modal__content { padding: 16px; max-width: 100%; margin: 10px; border-radius: var(--radius); }
+            .modal__title { font-size: 19px; margin: 12px 0 2px; }
+            .modal__date { font-size: 14px; }
+            .modal__close { font-size: 24px; top: 8px; right: 12px; }
+            .footer { padding: 16px 18px; font-size: 13px; margin-top: 30px; }
+        }
+
+        @media (max-width: 480px) {
+            :root {
+                --padding-body: 10px;
+                --padding-card: 14px;
+                --padding-header: 12px 14px;
+                --font-size-title: 17px;
+                --logo-size: 40px;
+            }
+            .header__brand { gap: 10px; }
+            .header__logo { font-size: 22px; }
+            .header__tagline { font-size: 11px; padding: 1px 8px; }
+            .theme-toggle { font-size: 12px; padding: 5px 12px; }
+            .theme-toggle span:last-child { display: none; }
+            .nav__btn { font-size: 12px; padding: 6px 8px; }
+            .nav__btn .icon { font-size: 14px; }
+            .nav__btn .nav__btn-text { font-size: 11px; }
+            .card__title { font-size: 17px; margin-bottom: 12px; }
+            .card__title .icon { font-size: 20px; }
+            .card__subtitle { font-size: 13px; }
+            .live-layout { gap: 12px; }
+            .live-layout__schedule { max-height: 160px; padding: 10px 12px; }
+            .live-layout__schedule-title { font-size: 11px; margin-bottom: 8px; }
+            .live-layout__schedule-item { grid-template-columns: 45px 1fr; gap: 8px; padding: 4px 0; }
+            .live-layout__schedule-time { font-size: 11px; }
+            .live-layout__schedule-program { font-size: 12px; }
+            .programs-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+            .program-card { padding: 12px; }
+            .program-card__title { font-size: 13px; }
+            .program-card__date { font-size: 11px; }
+            .program-card__play { font-size: 11px; margin-top: 4px; }
+            .news-item { padding: 10px 12px; flex-direction: column; align-items: flex-start; gap: 4px; }
+            .news-item__date { font-size: 11px; }
+            .news-item__text { font-size: 13px; }
+            .info-item { flex-direction: column; gap: 2px; padding: 8px 0; }
+            .info-item__label { min-width: auto; font-size: 13px; }
+            .info-item__value { font-size: 13px; }
+            .info-description { padding: 14px 16px; font-size: 13px; line-height: 1.6; }
+            .ads-block { padding: 14px 16px; }
+            .ads-block__title { font-size: 16px; }
+            .ads-block__subtitle { font-size: 13px; }
+            .ads-block__free { font-size: 12px; padding: 3px 14px; }
+            .contacts-list li { flex-direction: column; align-items: flex-start; gap: 2px; padding: 8px 12px; }
+            .contacts-list .label { font-size: 12px; min-width: auto; }
+            .contacts-list .value { font-size: 13px; }
+            .modal__content { padding: 12px; }
+            .modal__title { font-size: 17px; }
+            .modal__date { font-size: 13px; }
+            .modal__close { font-size: 22px; top: 6px; right: 10px; }
+            .footer { padding: 12px 14px; font-size: 12px; }
+        }
+
+        @media (max-width: 360px) {
+            :root {
+                --padding-body: 6px;
+                --padding-card: 10px;
+                --padding-header: 10px 12px;
+                --logo-size: 32px;
+            }
+            .header__logo { font-size: 18px; }
+            .header__tagline { font-size: 10px; padding: 1px 6px; }
+            .nav__btn { font-size: 10px; padding: 4px 6px; }
+            .nav__btn .icon { font-size: 12px; }
+            .programs-grid { grid-template-columns: 1fr; gap: 8px; }
+            .card__title { font-size: 16px; }
+            .modal__content { padding: 10px; }
+            .modal__title { font-size: 16px; }
+            .live-layout__schedule { max-height: 140px; padding: 8px 10px; }
+            .live-layout__schedule-item { grid-template-columns: 40px 1fr; gap: 6px; padding: 3px 0; }
+            .live-layout__schedule-time { font-size: 10px; }
+            .live-layout__schedule-program { font-size: 11px; }
+        }
+
+        @media (max-height: 500px) and (orientation: landscape) {
+            :root { --logo-size: 34px; }
+            .header { padding: 10px 18px; margin-bottom: 14px; flex-direction: row; }
+            .header__logo-img { height: var(--logo-size); }
+            .header__logo { font-size: 22px; }
+            .header__tagline { font-size: 12px; padding: 1px 10px; }
+            .nav { padding: 4px; margin-bottom: 14px; }
+            .nav__btn { padding: 6px 12px; font-size: 12px; }
+            .card { padding: 14px 18px; margin-bottom: 14px; }
+            .card__title { font-size: 17px; margin-bottom: 10px; }
+            .live-layout { grid-template-columns: 1fr 200px; gap: 12px; }
+            .live-layout__schedule { max-height: 180px; padding: 10px 12px; }
+            .live-layout__schedule-item { padding: 3px 0; }
+            .player-wrapper { max-height: 50vh; }
+            .programs-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px; }
+            .program-card { padding: 10px 12px; }
+            .footer { padding: 10px 14px; margin-top: 20px; }
+            .modal__content { padding: 12px; max-height: 95vh; }
+        }
+
+        @media (min-width: 1400px) {
+            :root {
+                --max-width: 1600px;
+                --padding-body: 40px;
+                --padding-card: 40px 48px;
+                --padding-header: 24px 48px;
+                --font-size-title: 28px;
+                --logo-size: 72px;
+            }
+            .header__logo { font-size: 40px; }
+            .header__tagline { font-size: 16px; padding: 3px 16px; }
+            .nav__btn { font-size: 18px; padding: 14px 36px; }
+            .live-layout { grid-template-columns: 1fr 360px; gap: 28px; }
+            .live-layout__schedule { max-height: 500px; padding: 24px 28px; }
+            .live-layout__schedule-item { padding: 8px 0; }
+            .live-layout__schedule-time { font-size: 14px; }
+            .live-layout__schedule-program { font-size: 15px; }
+            .programs-grid { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px; }
+            .info-grid { gap: 28px 80px; }
+            .card { margin-bottom: 36px; }
+        }
+
+        @media (pointer: coarse) {
+            .nav__btn { min-height: 44px; }
+            .program-card { min-height: 60px; }
+            .theme-toggle { min-height: 40px; }
+            .modal__close { min-width: 40px; min-height: 40px; }
+        }
+
+        @media (pointer: fine) {
+            .nav__btn { padding: 8px 20px; }
+        }
+
+        * {
+            transition: background var(--transition), color var(--transition), 
+                        border-color var(--transition), box-shadow var(--transition),
+                        padding 0.2s ease, margin 0.2s ease, font-size 0.2s ease;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ============================================================
+    HEADER
+    ============================================================ -->
+    <header class="header">
+        <div class="header__brand">
+            <img 
+                class="header__logo-img" 
+                src="https://i.ibb.co/0d2MQ1K/logo.png" 
+                alt="smcNight логотип" 
+                loading="lazy"
+            />
+            <div class="header__logo-text">
+                <span class="header__logo">smc<span>Night</span></span>
+                <span class="header__tagline">beta</span>
+            </div>
+        </div>
+        <div class="header__actions">
+            <button class="theme-toggle" id="themeToggle">
+                <span id="themeIcon">☀️</span>
+                <span id="themeLabel">Светлая</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- ============================================================
+    NAVIGATION
+    ============================================================ -->
+    <nav class="nav" id="tabNav">
+        <button class="nav__btn active" data-tab="home">
+            <span class="icon">⌂</span>
+            <span class="nav__btn-text">Главная</span>
+        </button>
+        <button class="nav__btn" data-tab="content">
+            <span class="icon">▸</span>
+            <span class="nav__btn-text">Контент</span>
+        </button>
+        <button class="nav__btn" data-tab="info">
+            <span class="icon">ⓘ</span>
+            <span class="nav__btn-text">Информация</span>
+        </button>
+        <button class="nav__btn" data-tab="ads">
+            <span class="icon">◈</span>
+            <span class="nav__btn-text">Реклама</span>
+        </button>
+    </nav>
+
+    <!-- ============================================================
+    ADMIN ENTRY (только для админа)
+    ============================================================ -->
+    <div class="admin-entry" id="adminEntry">
+        <a href="admin.html" class="admin-entry__link">🔧 Управление сайтом</a>
+    </div>
+
+    <!-- ============================================================
+    CONTENT
+    ============================================================ -->
+    <main class="content">
+
+        <!-- HOME -->
+        <section id="home" class="pane active">
+            <div class="card">
+                <h2 class="card__title">
+                    <span class="icon">▶</span> Прямой эфир
+                </h2>
+                <div class="live-layout">
+                    <div class="live-layout__player">
+                        <div class="player-wrapper" id="mainPlayerWrapper">
+                            <div class="player-placeholder" id="playerPlaceholder">
+                                <div class="player-placeholder__icon">◉</div>
+                                <div class="player-placeholder__title">Загрузка плеера...</div>
+                                <div class="player-placeholder__subtitle">Подключение к CatCast</div>
+                                <div class="player-placeholder__status">
+                                    <span class="dot"></span> подключение
+                                </div>
+                            </div>
+                            <div class="player-offline hidden" id="playerOffline">
+                                <div class="player-offline__icon">📡</div>
+                                <div class="player-offline__title">Эфир не идёт</div>
+                                <div class="player-offline__subtitle">Следующий эфир по расписанию</div>
+                            </div>
+                            <iframe 
+                                id="catcastIframe"
+                                src="https://catcast.tv/player/51102" 
+                                frameborder="0" 
+                                allowfullscreen
+                                width="640" 
+                                height="360">
+                            </iframe>
+                        </div>
+                    </div>
+                    <div class="live-layout__schedule" id="scheduleDisplay">
+                        <div class="live-layout__schedule-title">Программа передач</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 class="card__title">
+                    <span class="icon">📰</span> Последние новости
+                </h2>
+                <div class="news-list" id="newsDisplay"></div>
+            </div>
+        </section>
+
+        <!-- CONTENT -->
+        <section id="content" class="pane">
+            <div class="card">
+                <h2 class="card__title">
+                    <span class="icon">🎬</span> Архив программ
+                </h2>
+                <p class="card__subtitle">
+                    Нажмите на программу, чтобы открыть плеер.
+                </p>
+                <div class="programs-grid" id="programsGrid"></div>
+            </div>
+        </section>
+
+        <!-- INFO -->
+        <section id="info" class="pane">
+            <div class="card">
+                <h2 class="card__title">
+                    <span class="icon">ⓘ</span> О канале smcNight
+                </h2>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span class="info-item__label">Дата создания</span>
+                        <span class="info-item__value">16 апреля 2025 года</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-item__label">Владелец</span>
+                        <span class="info-item__value">
+                            Медиахолдинг <span class="highlight">"smcMedia"</span> 
+                            и ОК <span class="highlight">"smcRYTP"</span>
+                        </span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-item__label">Жанр</span>
+                        <span class="info-item__value">Информационно-развлекательный</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-item__label">Платформа</span>
+                        <span class="info-item__value">
+                            <span class="highlight">CatCast</span>
+                        </span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-item__label">Аудитория</span>
+                        <span class="info-item__value">50+ зрителей</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-item__label">Язык</span>
+                        <span class="info-item__value">Русский</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-item__label">Telegram-канал</span>
+                        <span class="info-item__value">
+                            <a href="https://t.me/smcNightik" target="_blank">smcNight (@smcNightik)</a>
+                        </span>
+                    </div>
+                </div>
+                <div class="info-description">
+                    <p>
+                        <strong>smcNight</strong> — является любительским интернет-каналом из 
+                        <span class="highlight">Арсеньева</span>. На канале транслируются старые программы 
+                        телекомпании <span class="highlight">ВИD</span>, разный контент от 
+                        <span class="highlight">smcMedia</span>, а также мультфильмы.
+                    </p>
+                    <p style="margin-top: 12px;">
+                        Вещание канала может осуществляться с <span class="highlight">11:00</span> или с 
+                        <span class="highlight">13:00</span> до <span class="highlight">19:00</span> или до 
+                        <span class="highlight">20:30</span>.
+                    </p>
+                    <p style="margin-top: 12px;">
+                        Канал зарегистрирован на платформе <span class="highlight">CatCast</span>.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ADS -->
+        <section id="ads" class="pane">
+            <div class="card">
+                <h2 class="card__title">
+                    <span class="icon">◈</span> Реклама на smcNight
+                </h2>
+                <p class="card__subtitle">
+                    Размещение рекламы на канале — абсолютно бесплатно.
+                </p>
+                <div class="ads-block">
+                    <div class="ads-block__free">Бесплатно</div>
+                    <h3 class="ads-block__title">Контакты для связи</h3>
+                    <p class="ads-block__subtitle">
+                        По всем вопросам рекламы обращайтесь:
+                    </p>
+                    <ul class="contacts-list">
+                        <li>
+                            <span class="label">Telegram</span>
+                            <span class="value">
+                                <a href="https://t.me/not_tails" target="_blank">@not_tails</a>
+                            </span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <p>
+            © 2025–2026 <strong>smcNight</strong> — интернет-канал.
+            Сделано с любовью для ночных зрителей.
+        </p>
+    </footer>
+
+    <!-- MODAL -->
+    <div class="modal" id="modalPlayer" role="dialog" aria-modal="true" aria-label="Плеер программы">
+        <div class="modal__content">
+            <button class="modal__close" id="closeModalBtn" aria-label="Закрыть плеер">✕</button>
+            <div class="modal__player" id="modalPlayerWrapper">
+                <video id="modalVideo" controls autoplay playsinline></video>
+            </div>
+            <h3 class="modal__title" id="modalTitle">Название программы</h3>
+            <p class="modal__date" id="modalDate">Дата выхода</p>
+        </div>
+    </div>
+
+    <!-- ============================================================
+    JAVASCRIPT
+    ============================================================ -->
+    <script>
+        (function() {
+            'use strict';
+
+            // ============================================================
+            // ОПРЕДЕЛЕНИЕ АДМИНА ПО IP
+            // ============================================================
+            // ВАШ IP-АДРЕС
+            const ADMIN_IP = '185.109.20.46'; // ← ВАШ IP
+
+            // ============================================================
+            // ДАННЫЕ ПО УМОЛЧАНИЮ
+            // ============================================================
+            const DEFAULT_NEWS = [
+                { id: 1, date: '24.08.2026', text: 'Запускаем новый формат — «Ночной джаз» по пятницам!', badge: 'новое' },
+                { id: 2, date: '23.08.2026', text: 'Техническое обновление: улучшено качество трансляции.', badge: '' },
+                { id: 3, date: '22.08.2026', text: 'smcNight теперь в Telegram-канале.', badge: 'важно' },
+                { id: 4, date: '20.08.2026', text: 'Конкурс: присылайте свои клипы для эфира.', badge: '' },
+                { id: 5, date: '18.08.2026', text: 'Новый ведущий в вечернем стриме — Андрей Н.', badge: '' },
+            ];
+
+            const DEFAULT_SCHEDULE = [
+                { id: 1, time: '00:00', program: 'Ночной джаз' },
+                { id: 2, time: '02:00', program: 'Киноклуб: триллер' },
+                { id: 3, time: '04:30', program: 'Акустика' },
+                { id: 4, time: '07:00', program: 'Утреннее шоу' },
+                { id: 5, time: '10:00', program: 'Новости smc' },
+                { id: 6, time: '12:00', program: 'Обеденный перерыв' },
+                { id: 7, time: '14:00', program: 'Техно-микс' },
+                { id: 8, time: '17:00', program: 'Вечерний стрим' },
+                { id: 9, time: '20:00', program: 'Премьера' },
+                { id: 10, time: '22:00', program: 'Ночной эфир' },
+            ];
+
+            const DEFAULT_VIDEOS = [
+                { id: 1, title: 'Ночной джаз', date: '24.08.2026', url: 'https://www.youtube.com/embed/dQw4w9WgXcQ' },
+                { id: 2, title: 'Киноклуб: триллер', date: '23.08.2026', url: 'https://www.youtube.com/embed/dQw4w9WgXcQ' },
+                { id: 3, title: 'Акустика', date: '22.08.2026', url: 'https://www.youtube.com/embed/dQw4w9WgXcQ' },
+                { id: 4, title: 'Утреннее шоу', date: '21.08.2026', url: 'https://www.youtube.com/embed/dQw4w9WgXcQ' },
+                { id: 5, title: 'Техно-микс', date: '20.08.2026', url: 'https://www.youtube.com/embed/dQw4w9WgXcQ' },
+                { id: 6, title: 'Вечерний стрим', date: '19.08.2026', url: 'https://www.youtube.com/embed/dQw4w9WgXcQ' },
+                { id: 7, title: 'Премьера', date: '18.08.2026', url: 'https://www.youtube.com/embed/dQw4w9WgXcQ' },
+                { id: 8, title: 'Ночной эфир', date: '17.08.2026', url: 'https://www.youtube.com/embed/dQw4w9WgXcQ' },
+            ];
+
+            // ============================================================
+            // РАБОТА С LOCALSTORAGE
+            // ============================================================
+            function getData(key, defaultData) {
+                try {
+                    const stored = localStorage.getItem('smcNight_' + key);
+                    if (stored) {
+                        const parsed = JSON.parse(stored);
+                        if (Array.isArray(parsed) && parsed.length > 0) {
+                            return parsed;
+                        }
+                    }
+                } catch (e) {}
+                saveData(key, defaultData);
+                return defaultData;
+            }
+
+            function saveData(key, data) {
+                try {
+                    localStorage.setItem('smcNight_' + key, JSON.stringify(data));
+                } catch (e) {}
+            }
+
+            let newsData = getData('news', DEFAULT_NEWS);
+            let scheduleData = getData('schedule', DEFAULT_SCHEDULE);
+            let videoData = getData('videos', DEFAULT_VIDEOS);
+
+            // ============================================================
+            // DOM
+            // ============================================================
+            const dom = {
+                nav: document.getElementById('tabNav'),
+                navBtns: document.querySelectorAll('.nav__btn'),
+                panes: {
+                    home: document.getElementById('home'),
+                    content: document.getElementById('content'),
+                    info: document.getElementById('info'),
+                    ads: document.getElementById('ads'),
+                },
+                // Display
+                newsDisplay: document.getElementById('newsDisplay'),
+                scheduleDisplay: document.getElementById('scheduleDisplay'),
+                programsGrid: document.getElementById('programsGrid'),
+                // Modal
+                modal: document.getElementById('modalPlayer'),
+                modalVideo: document.getElementById('modalVideo'),
+                modalTitle: document.getElementById('modalTitle'),
+                modalDate: document.getElementById('modalDate'),
+                closeModalBtn: document.getElementById('closeModalBtn'),
+                // Theme
+                themeToggle: document.getElementById('themeToggle'),
+                themeIcon: document.getElementById('themeIcon'),
+                themeLabel: document.getElementById('themeLabel'),
+                // Player
+                playerPlaceholder: document.getElementById('playerPlaceholder'),
+                playerOffline: document.getElementById('playerOffline'),
+                catcastIframe: document.getElementById('catcastIframe'),
+                // Admin entry
+                adminEntry: document.getElementById('adminEntry'),
+            };
+
+            // ============================================================
+            // ПРОВЕРКА — АДМИН ИЛИ НЕТ
+            // ============================================================
+            function checkIfAdmin() {
+                // Сначала проверяем localStorage (если админ уже заходил)
+                try {
+                    const savedIP = localStorage.getItem('smcNight_admin_ip');
+                    if (savedIP === ADMIN_IP) {
+                        dom.adminEntry.classList.add('show');
+                        console.log('✅ Вы админ (из localStorage)! Показана кнопка входа в админ-панель');
+                        return;
+                    }
+                } catch (e) {}
+
+                // Если нет — проверяем IP через api.ipify.org
+                fetch('https://api.ipify.org?format=json')
+                    .then(response => response.json())
+                    .then(data => {
+                        const userIP = data.ip;
+                        console.log('🌐 Ваш IP:', userIP);
+                        console.log('🔐 IP админа:', ADMIN_IP);
+
+                        if (userIP === ADMIN_IP) {
+                            dom.adminEntry.classList.add('show');
+                            try {
+                                localStorage.setItem('smcNight_admin_ip', userIP);
+                            } catch (e) {}
+                            console.log('✅ Вы админ! Показана кнопка входа в админ-панель');
+                        } else {
+                            dom.adminEntry.classList.remove('show');
+                            console.log('👤 Вы обычный посетитель');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('❌ Ошибка определения IP:', error);
+                        dom.adminEntry.classList.remove('show');
+                    });
+            }
+
+            // ============================================================
+            // ОТОБРАЖЕНИЕ ДАННЫХ
+            // ============================================================
+
+            // ----- Новости -----
+            function renderNews() {
+                const container = dom.newsDisplay;
+                container.innerHTML = '';
+                newsData.forEach(item => {
+                    const el = document.createElement('article');
+                    el.className = 'news-item';
+                    el.innerHTML = `
+                        <span class="news-item__date">${item.date}</span>
+                        <span class="news-item__text">${item.text}</span>
+                        ${item.badge ? `<span class="news-item__badge">${item.badge}</span>` : ''}
+                    `;
+                    container.appendChild(el);
+                });
+            }
+
+            // ----- Программа передач -----
+            function renderSchedule() {
+                const container = dom.scheduleDisplay;
+                container.innerHTML = '<div class="live-layout__schedule-title">Программа передач</div>';
+                scheduleData.forEach(item => {
+                    const el = document.createElement('div');
+                    el.className = 'live-layout__schedule-item';
+                    el.innerHTML = `
+                        <span class="live-layout__schedule-time">${item.time}</span>
+                        <span class="live-layout__schedule-program">${item.program}</span>
+                    `;
+                    container.appendChild(el);
+                });
+            }
+
+            // ----- Видео -----
+            function renderVideos() {
+                const container = dom.programsGrid;
+                container.innerHTML = '';
+                videoData.forEach(item => {
+                    const card = document.createElement('button');
+                    card.className = 'program-card';
+                    card.innerHTML = `
+                        <span class="program-card__title">${item.title}</span>
+                        <span class="program-card__date">
+                            <span class="icon">📅</span> ${item.date}
+                        </span>
+                        <span class="program-card__play">▶ Смотреть</span>
+                    `;
+                    card.addEventListener('click', function() {
+                        openModal(item.title, item.date, item.url);
+                    });
+                    container.appendChild(card);
+                });
+            }
+
+            // ============================================================
+            // МОДАЛЬНОЕ ОКНО
+            // ============================================================
+            function openModal(title, date, url) {
+                dom.modalTitle.textContent = title;
+                dom.modalDate.textContent = date;
+                dom.modalVideo.src = url;
+                dom.modal.classList.add('open');
+                document.body.style.overflow = 'hidden';
+                dom.modalVideo.play().catch(function(e) {
+                    console.log('Автовоспроизведение в модалке заблокировано:', e);
+                });
+            }
+
+            function closeModal() {
+                dom.modal.classList.remove('open');
+                document.body.style.overflow = '';
+                dom.modalVideo.pause();
+                dom.modalVideo.src = '';
+            }
+
+            // ============================================================
+            // ПЕРЕКЛЮЧЕНИЕ ВКЛАДОК
+            // ============================================================
+            function switchTab(tabId) {
+                dom.navBtns.forEach(btn => {
+                    btn.classList.toggle('active', btn.dataset.tab === tabId);
+                });
+
+                Object.keys(dom.panes).forEach(key => {
+                    dom.panes[key].classList.toggle('active', key === tabId);
+                });
+
+                if (dom.modal.classList.contains('open')) closeModal();
+            }
+
+            // ============================================================
+            // ТЕМА
+            // ============================================================
+            function setTheme(theme) {
+                const isDark = theme === 'dark';
+                document.documentElement.setAttribute('data-theme', isDark ? 'dark' : '');
+                dom.themeIcon.textContent = isDark ? '🌙' : '☀️';
+                dom.themeLabel.textContent = isDark ? 'Тёмная' : 'Светлая';
+                try {
+                    localStorage.setItem('smcNight-theme', theme);
+                } catch (_) {}
+            }
+
+            function toggleTheme() {
+                const current = document.documentElement.getAttribute('data-theme');
+                const next = current === 'dark' ? 'light' : 'dark';
+                setTheme(next);
+            }
+
+            function loadTheme() {
+                let saved = 'light';
+                try {
+                    const stored = localStorage.getItem('smcNight-theme');
+                    if (stored === 'dark' || stored === 'light') {
+                        saved = stored;
+                    }
+                } catch (_) {}
+                setTheme(saved);
+            }
+
+            // ============================================================
+            // УПРАВЛЕНИЕ ЭФИРОМ (из localStorage)
+            // ============================================================
+            function loadStreamState() {
+                try {
+                    const isOffline = localStorage.getItem('smcNight_offline') === 'true';
+                    dom.playerOffline.classList.toggle('hidden', !isOffline);
+                    dom.catcastIframe.style.display = isOffline ? 'none' : 'block';
+                } catch (_) {
+                    dom.playerOffline.classList.add('hidden');
+                    dom.catcastIframe.style.display = 'block';
+                }
+            }
+
+            // ============================================================
+            // ИНИЦИАЛИЗАЦИЯ
+            // ============================================================
+
+            // Навигация
+            dom.navBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const tab = this.dataset.tab;
+                    if (tab) switchTab(tab);
+                });
+            });
+
+            // Модалка
+            dom.closeModalBtn.addEventListener('click', closeModal);
+            dom.modal.addEventListener('click', function(e) {
+                if (e.target === dom.modal) closeModal();
+            });
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') closeModal();
+            });
+
+            // Тема
+            dom.themeToggle.addEventListener('click', toggleTheme);
+
+            // Загружаем данные
+            renderNews();
+            renderSchedule();
+            renderVideos();
+            loadTheme();
+            loadStreamState();
+
+            // Проверяем, админ ли пользователь
+            checkIfAdmin();
+
+            // Показываем плеер
+            setTimeout(function() {
+                dom.playerPlaceholder.classList.add('hidden');
+                console.log('✅ CatCast плеер загружен');
+            }, 2000);
+
+            console.log('✅ smcNight — сайт успешно загружен');
+            console.log('📦 Загружено новостей: ' + newsData.length);
+            console.log('📅 Загружено программ: ' + scheduleData.length);
+            console.log('🎬 Загружено видео: ' + videoData.length);
+            console.log('📺 CatCast плеер: https://catcast.tv/player/51102');
+
+        })();
+    </script>
+
+</body>
+</html>
